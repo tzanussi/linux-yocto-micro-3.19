@@ -45,6 +45,9 @@ obj-$(CONFIG_PERF_EVENTS_INTEL_UNCORE)	+= perf_event_intel_uncore.o \
 					   perf_event_intel_uncore_snb.o \
 					   perf_event_intel_uncore_snbep.o \
 					   perf_event_intel_uncore_nhmex.o
+ifdef CONFIG_X86_LOCAL_APIC
+obj-$(CONFIG_CPU_SUP_AMD)		+= perf_event_amd_ibs.o
+endif
 endif
 
 
@@ -52,7 +55,7 @@ obj-$(CONFIG_X86_MCE)			+= mcheck/
 obj-$(CONFIG_MTRR)			+= mtrr/
 obj-$(CONFIG_MICROCODE)			+= microcode/
 
-obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o perf_event_amd_ibs.o
+obj-$(CONFIG_X86_LOCAL_APIC)		+= perfctr-watchdog.o
 
 obj-$(CONFIG_HYPERVISOR_GUEST)		+= vmware.o hypervisor.o mshyperv.o
 
