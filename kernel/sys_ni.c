@@ -236,3 +236,8 @@ cond_syscall(sys_bpf);
 
 /* execveat */
 cond_syscall(sys_execveat);
+
+/* userspace I/O port access */
+cond_syscall(stub_iopl);
+cond_syscall(sys_iopl);
+cond_syscall(sys_ioperm);

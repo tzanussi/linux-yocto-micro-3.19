@@ -1267,7 +1267,6 @@ void cpu_init(void)
 	struct tss_struct *t;
 	unsigned long v;
 	int cpu = stack_smp_processor_id();
-	int i;
 
 	wait_for_master_cpu(cpu);
 
@@ -1327,14 +1326,7 @@ void cpu_init(void)
 		}
 	}
 
-	t->x86_tss.io_bitmap_base = offsetof(struct tss_struct, io_bitmap);
-
-	/*
-	 * <= is required because the CPU will access up to
-	 * 8 bits beyond the end of the IO permission bitmap.
-	 */
-	for (i = 0; i <= IO_BITMAP_LONGS; i++)
-		t->io_bitmap[i] = ~0UL;
+	init_tss_io(t);
 
 	atomic_inc(&init_mm.mm_count);
 	me->active_mm = &init_mm;
@@ -1389,7 +1381,7 @@ void cpu_init(void)
 	load_TR_desc();
 	load_LDT(&init_mm.context);
 
-	t->x86_tss.io_bitmap_base = offsetof(struct tss_struct, io_bitmap);
+	init_tss_io(t);
 
 #ifdef CONFIG_DOUBLEFAULT
 	/* Set up doublefault TSS pointer in the GDT */
