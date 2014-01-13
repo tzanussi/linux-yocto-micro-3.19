@@ -285,6 +285,7 @@ struct bpf_prog_aux;
 	bpf_size;						\
 })
 
+#ifdef CONFIG_LPF_FILTER
 /* Macro to invoke filter function. */
 #define SK_RUN_FILTER(filter, ctx) \
 	(*filter->prog->bpf_func)(ctx, filter->prog->insnsi)
@@ -390,6 +391,32 @@ int sk_get_filter(struct sock *sk, struct sock_filter __user *filter,
 
 bool sk_filter_charge(struct sock *sk, struct sk_filter *fp);
 void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp);
+#else
+#define SK_RUN_FILTER(filter, ctx) 0
+static inline int
+sk_filter(struct sock *sk, struct sk_buff *skb) { return 0; }
+static inline u32 sk_run_filter_int_seccomp(const struct seccomp_data *ctx,
+			      const struct sock_filter_int *insni)
+{ return 0; }
+static inline u32 sk_run_filter_int_skb(const struct sk_buff *ctx,
+			  const struct sock_filter_int *insni)
+{ return 0; }
+static inline int sk_unattached_filter_create(struct sk_filter **pfp,
+				       struct sock_fprog *fprog)
+{ return -EINVAL; }
+static inline void sk_unattached_filter_destroy(struct sk_filter *fp) {}
+static inline int sk_attach_filter(struct sock_fprog *fprog, struct sock *sk)
+{ return -EINVAL; }
+static inline int sk_detach_filter(struct sock *sk) { return -EINVAL; }
+static inline int sk_chk_filter(struct sock_filter *filter, unsigned int flen)
+{ return 0; }
+static inline int sk_get_filter(struct sock *sk, struct sock_filter __user *filter, unsigned len)
+{ return -EINVAL; }
+static inline void
+sk_decode_filter(struct sock_filter *filt, struct sock_filter *to) {}
+static inline void sk_filter_charge(struct sock *sk, struct sk_filter *fp) {}
+static inline void sk_filter_uncharge(struct sock *sk, struct sk_filter *fp) {}
+#endif
 
 u64 __bpf_call_base(u64 r1, u64 r2, u64 r3, u64 r4, u64 r5);
 void bpf_int_jit_compile(struct bpf_prog *fp);
