@@ -1198,6 +1198,9 @@ int inet_sk_rebuild_header(struct sock *sk)
 }
 EXPORT_SYMBOL(inet_sk_rebuild_header);
 
+#ifdef CONFIG_IP_OFFLOAD
+/* Should move to a new file */
+
 static struct sk_buff *inet_gso_segment(struct sk_buff *skb,
 					netdev_features_t features)
 {
@@ -1387,17 +1390,6 @@ out:
 	return pp;
 }
 
-int inet_recv_error(struct sock *sk, struct msghdr *msg, int len, int *addr_len)
-{
-	if (sk->sk_family == AF_INET)
-		return ip_recv_error(sk, msg, len, addr_len);
-#if IS_ENABLED(CONFIG_IPV6)
-	if (sk->sk_family == AF_INET6)
-		return pingv6_ops.ipv6_recv_error(sk, msg, len, addr_len);
-#endif
-	return -EINVAL;
-}
-
 static int inet_gro_complete(struct sk_buff *skb, int nhoff)
 {
 	__be16 newlen = htons(skb->len - nhoff);
@@ -1427,6 +1419,19 @@ out_unlock:
 	rcu_read_unlock();
 
 	return err;
+}
+
+#endif
+
+int inet_recv_error(struct sock *sk, struct msghdr *msg, int len, int *addr_len)
+{
+	if (sk->sk_family == AF_INET)
+		return ip_recv_error(sk, msg, len, addr_len);
+#if IS_ENABLED(CONFIG_IPV6)
+	if (sk->sk_family == AF_INET6)
+		return pingv6_ops.ipv6_recv_error(sk, msg, len, addr_len);
+#endif
+	return -EINVAL;
 }
 
 int inet_ctl_sock_create(struct sock **sk, unsigned short family,
@@ -1629,6 +1634,9 @@ static int __init init_inet_pernet_ops(void)
 
 static int ipv4_proc_init(void);
 
+#ifdef CONFIG_IP_OFFLOAD
+/* Move elsewhere? */
+
 /*
  *	IP protocol layer initialiser
  */
@@ -1666,6 +1674,7 @@ static int __init ipv4_offload_init(void)
 }
 
 fs_initcall(ipv4_offload_init);
+#endif
 
 static struct packet_type ip_packet_type __read_mostly = {
 	.type = cpu_to_be16(ETH_P_IP),
