@@ -99,6 +99,12 @@ config LPF_FILTER
 	help
 	  Enable BPF/LPF (Linux Packet Filter) filtering on sockets.
 
+config NET_ETHTOOL
+	bool "Ethtool support"
+	default y
+	help
+	  Support changing ethernet driver parameters from user tools.
+
 config NETWORK_SECMARK
 	bool "Security Marking"
 	help

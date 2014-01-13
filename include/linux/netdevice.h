@@ -60,8 +60,17 @@ struct wireless_dev;
 /* 802.15.4 specific */
 struct wpan_dev;
 
+#ifdef CONFIG_NET_ETHTOOL
 void netdev_set_default_ethtool_ops(struct net_device *dev,
 				    const struct ethtool_ops *ops);
+int dev_ethtool(struct net *net, struct ifreq *);
+#else
+static inline void
+netdev_set_default_ethtool_ops(struct net_device *dev,
+			       const struct ethtool_ops *ops) {}
+static inline int
+dev_ethtool(struct net *net, struct ifreq *ifr) { return -EINVAL; }
+#endif
 
 /* Backlog congestion levels */
 #define NET_RX_SUCCESS		0	/* keep 'em coming, baby */
@@ -2875,7 +2884,6 @@ void netdev_rx_handler_unregister(struct net_device *dev);
 
 bool dev_valid_name(const char *name);
 int dev_ioctl(struct net *net, unsigned int cmd, void __user *);
-int dev_ethtool(struct net *net, struct ifreq *);
 unsigned int dev_get_flags(const struct net_device *);
 int __dev_change_flags(struct net_device *, unsigned int flags);
 int dev_change_flags(struct net_device *, unsigned int);
