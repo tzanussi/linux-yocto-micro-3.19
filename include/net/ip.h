@@ -200,6 +200,7 @@ void ip_send_unicast_reply(struct sock *sk, struct sk_buff *skb,
 #define NET_ADD_STATS_BH(net, field, adnd) SNMP_ADD_STATS_BH((net)->mib.net_statistics, field, adnd)
 #define NET_ADD_STATS_USER(net, field, adnd) SNMP_ADD_STATS_USER((net)->mib.net_statistics, field, adnd)
 
+#ifdef CONFIG_PROC_FS
 unsigned long snmp_fold_field(void __percpu *mib, int offt);
 #if BITS_PER_LONG==32
 u64 snmp_fold_field64(void __percpu *mib, int offt, size_t sync_off);
@@ -208,6 +209,12 @@ static inline u64 snmp_fold_field64(void __percpu *mib, int offt, size_t syncp_o
 {
 	return snmp_fold_field(mib, offt);
 }
+#endif
+#else
+#define snmp_mib_init(a,b,c) ({ 0; })
+#define snmp_mib_free(x) do {} while (0)
+#define snmp_fold_field(a, b) ({ 0; })
+#define snmp_fold_field64(a, b, c) ({ 0; })
 #endif
 
 void inet_get_local_port_range(struct net *net, int *low, int *high);
@@ -569,6 +576,8 @@ extern int sysctl_icmp_msgs_burst;
 
 #ifdef CONFIG_PROC_FS
 int ip_misc_proc_init(void);
+#else
+static inline int ip_misc_proc_init(void) { return 0; }
 #endif
 
 #endif	/* _IP_H */

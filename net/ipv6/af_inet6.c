@@ -708,6 +708,7 @@ static void ipv6_packet_cleanup(void)
 	dev_remove_pack(&ipv6_packet_type);
 }
 
+#ifdef CONFIG_PROC_FS
 static int __net_init ipv6_init_mibs(struct net *net)
 {
 	int i;
@@ -757,6 +758,10 @@ static void ipv6_cleanup_mibs(struct net *net)
 	free_percpu(net->mib.icmpv6_statistics);
 	kfree(net->mib.icmpv6msg_statistics);
 }
+#else
+static inline int __net_init ipv6_init_mibs(struct net *net) { return 0; }
+static inline void ipv6_cleanup_mibs(struct net *net) {}
+#endif
 
 static int __net_init inet6_net_init(struct net *net)
 {
