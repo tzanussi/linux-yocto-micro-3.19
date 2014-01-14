@@ -1407,6 +1407,7 @@ static int inetdev_event(struct notifier_block *this, unsigned long event,
 		/* Send gratuitous ARP to notify of link change */
 		inetdev_send_gratuitous_arp(dev, in_dev);
 		break;
+#ifdef CONFIG_IP_MULTICAST
 	case NETDEV_DOWN:
 		ip_mc_down(in_dev);
 		break;
@@ -1416,6 +1417,7 @@ static int inetdev_event(struct notifier_block *this, unsigned long event,
 	case NETDEV_POST_TYPE_CHANGE:
 		ip_mc_remap(in_dev);
 		break;
+#endif
 	case NETDEV_CHANGEMTU:
 		if (inetdev_valid_mtu(dev->mtu))
 			break;
