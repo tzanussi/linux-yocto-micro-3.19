@@ -850,9 +850,11 @@ static int __init inet6_init(void)
 	if (err)
 		goto out_unregister_udp_proto;
 
+#ifdef CONFIG_INET_RAW
 	err = proto_register(&rawv6_prot, 1);
 	if (err)
 		goto out_unregister_udplite_proto;
+#endif
 
 #ifdef CONFIG_IP_PING
 	err = proto_register(&pingv6_prot, 1);
@@ -1021,8 +1023,10 @@ out_unregister_ping_proto:
 	proto_unregister(&pingv6_prot);
 out_unregister_raw_proto:
 #endif
+#ifdef CONFIG_INET_RAW
 	proto_unregister(&rawv6_prot);
 out_unregister_udplite_proto:
+#endif
 	proto_unregister(&udplitev6_prot);
 out_unregister_udp_proto:
 	proto_unregister(&udpv6_prot);
