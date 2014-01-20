@@ -231,7 +231,7 @@ source "net/hsr/Kconfig"
 source "net/switchdev/Kconfig"
 
 config RPS
-	boolean
+	bool "Support multiqueue input queues (RPS)"
 	depends on SMP && SYSFS
 	default y
 
