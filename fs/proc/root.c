@@ -180,15 +180,19 @@ void __init proc_root_init(void)
 #ifdef CONFIG_SYSVIPC
 	proc_mkdir("sysvipc", NULL);
 #endif
+#ifdef CONFIG_PROC_FS
 	proc_mkdir("fs", NULL);
 	proc_mkdir("driver", NULL);
 	proc_mkdir("fs/nfsd", NULL); /* somewhere for the nfsd filesystem to be mounted */
+#endif
 #if defined(CONFIG_SUN_OPENPROMFS) || defined(CONFIG_SUN_OPENPROMFS_MODULE)
 	/* just give it a mountpoint */
 	proc_mkdir("openprom", NULL);
 #endif
 	proc_tty_init();
+#ifdef CONFIG_PROC_FS
 	proc_mkdir("bus", NULL);
+#endif
 	proc_sys_init();
 }
 

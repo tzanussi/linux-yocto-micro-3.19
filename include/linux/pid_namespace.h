@@ -31,7 +31,7 @@ struct pid_namespace {
 	struct kmem_cache *pid_cachep;
 	unsigned int level;
 	struct pid_namespace *parent;
-#ifdef CONFIG_PROC_FS
+#ifdef CONFIG_PROC_FS_MIN
 	struct vfsmount *proc_mnt;
 	struct dentry *proc_self;
 	struct dentry *proc_thread_self;

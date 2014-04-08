@@ -80,7 +80,7 @@ struct irq_desc {
 	unsigned int		no_suspend_depth;
 	unsigned int		force_resume_depth;
 #endif
-#ifdef CONFIG_PROC_FS
+#ifdef CONFIG_PROC_FS_MIN
 	struct proc_dir_entry	*dir;
 #endif
 	int			parent_irq;
