@@ -1205,7 +1205,7 @@ void ping_proc_exit(void)
 }
 
 module_init(ping_proc_init);
-module_exit(ping_proc_init);
+module_exit(ping_proc_exit);
 
 #endif
 
