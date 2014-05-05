@@ -268,7 +268,8 @@ config IP_PIMSM_V2
 	  you want to play with it.
 
 config TCP_METRICS
-	bool "Report TCP metrics over netlink"
+	bool "Save TCP metrics between connections"
+	default y
 	---help---
            Enable support in TCP to save host information between different
 	   connections.
