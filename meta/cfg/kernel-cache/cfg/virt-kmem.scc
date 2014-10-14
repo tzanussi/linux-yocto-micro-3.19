@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable virt_kmem support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware virt-kmem.cfg
