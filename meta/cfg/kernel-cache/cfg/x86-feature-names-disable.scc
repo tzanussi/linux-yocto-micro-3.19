@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable x86 feature names"
+define KFEATURE_COMPATIBILITY arch
+
+kconf hardware x86-feature-names-disable.cfg
