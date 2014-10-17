@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable madvise/fadvise system calls"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware advise-syscalls-disable.cfg
