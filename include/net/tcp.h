@@ -422,9 +422,8 @@ void tcp_fetch_timewait_stamp(struct sock *sk, struct dst_entry *dst);
 static inline void tcp_update_metrics(struct sock *sk) {}
 static inline void tcp_init_metrics(struct sock *sk) {}
 static inline void tcp_metrics_init(void) {}
-static inline bool tcp_peer_is_proven(struct request_sock *req,
-				      struct dst_entry *dst,
-				      bool paws_check) { return false; }
+bool tcp_peer_is_proven(struct request_sock *req, struct dst_entry *dst,
+			bool paws_check, bool timestamps) { return false; }
 static inline bool tcp_remember_stamp(struct sock *sk) { return false; }
 static inline bool
 tcp_tw_remember_stamp(struct inet_timewait_sock *tw) { return false; }
