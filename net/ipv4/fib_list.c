@@ -184,7 +184,7 @@ static void insert_entry_info(struct hlist_head *head, struct entry_info *new)
 			last = li;
 		}
 		if (last)
-			hlist_add_after_rcu(&last->hlist, &new->hlist);
+			hlist_add_behind_rcu(&last->hlist, &new->hlist);
 		else
 			hlist_add_before_rcu(&new->hlist, &li->hlist);
 	}
@@ -224,7 +224,7 @@ static struct list_head *fib_insert_node(struct rlist *rl, u32 key, int plen)
 	entry->mask = ntohl(inet_make_mask(plen));
 	entry->plen = plen;
 	if (prev)
-		hlist_add_after_rcu(prev, &entry->nd);
+		hlist_add_behind_rcu(prev, &entry->nd);
 	else
 		hlist_add_head_rcu(&entry->nd, &rl->list);
 	ei = entry_info_new(plen);
