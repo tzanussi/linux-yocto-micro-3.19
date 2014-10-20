@@ -180,6 +180,10 @@ cond_syscall(sys_setfsuid);
 cond_syscall(sys_setfsgid);
 cond_syscall(sys_capget);
 cond_syscall(sys_capset);
+cond_syscall(sys_adjtimex);
+cond_syscall(compat_sys_adjtimex);
+cond_syscall(sys_clock_adjtime);
+cond_syscall(compat_sys_clock_adjtime);
 
 /* arch-specific weak syscall entries */
 cond_syscall(sys_pciconfig_read);
