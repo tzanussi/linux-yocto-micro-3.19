@@ -184,6 +184,14 @@ cond_syscall(sys_adjtimex);
 cond_syscall(compat_sys_adjtimex);
 cond_syscall(sys_clock_adjtime);
 cond_syscall(compat_sys_clock_adjtime);
+cond_syscall(sys_vmsplice);
+cond_syscall(sys_splice);
+cond_syscall(sys_tee);
+cond_syscall(sys_sendfile);
+cond_syscall(sys_sendfile64);
+cond_syscall(compat_sys_vmsplice);
+cond_syscall(compat_sys_sendfile);
+cond_syscall(compat_sys_sendfile64);
 
 /* arch-specific weak syscall entries */
 cond_syscall(sys_pciconfig_read);

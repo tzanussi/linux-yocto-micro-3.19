@@ -1622,6 +1622,16 @@ config NTP
 	  system clock to an NTP server, you can disable this option to save
 	  space.
 
+config SYSCALL_SPLICE
+	bool "Enable splice/vmsplice/tee/sendfile syscalls" if EXPERT
+	default y
+	help
+	  This option enables the splice, vmsplice, tee and sendfile syscalls. These
+	  are used by applications to: move data between buffers and arbitrary file
+	  descriptors; "copy" data between buffers; or copy data from userspace into
+	  buffers. If building an embedded system where no applications use these
+	  syscalls, you can disable this option to save space.
+
 config PCI_QUIRKS
 	default y
 	bool "Enable PCI quirk workarounds" if EXPERT
