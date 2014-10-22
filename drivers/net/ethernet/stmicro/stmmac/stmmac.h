@@ -121,7 +121,12 @@ struct stmmac_priv {
 int stmmac_mdio_unregister(struct net_device *ndev);
 int stmmac_mdio_register(struct net_device *ndev);
 int stmmac_mdio_reset(struct mii_bus *mii);
+
+#ifdef CONFIG_NET_ETHTOOL
 void stmmac_set_ethtool_ops(struct net_device *netdev);
+#else
+static inline void stmmac_set_ethtool_ops(struct net_device *netdev) {}
+#endif
 
 int stmmac_ptp_register(struct stmmac_priv *priv);
 void stmmac_ptp_unregister(struct stmmac_priv *priv);
