@@ -57,6 +57,9 @@ config ARCH_HAS_FAST_MULTIPLIER
 config RHASHTABLE
 	bool
 
+config FLEX_ARRAY
+	bool
+
 config CRC_CCITT
 	tristate "CRC-CCITT functions"
 	help
