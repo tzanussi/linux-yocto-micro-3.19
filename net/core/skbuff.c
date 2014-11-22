@@ -1765,7 +1765,8 @@ EXPORT_SYMBOL(skb_copy_bits);
  * Callback from splice_to_pipe(), if we need to release some pages
  * at the end of the spd in case we error'ed out in filling the pipe.
  */
-static void sock_spd_release(struct splice_pipe_desc *spd, unsigned int i)
+static void __maybe_unused sock_spd_release(struct splice_pipe_desc *spd,
+					    unsigned int i)
 {
 	put_page(spd->pages[i]);
 }
@@ -1868,9 +1869,9 @@ static bool __splice_segment(struct page *page, unsigned int poff,
  * Map linear and fragment data from the skb to spd. It reports true if the
  * pipe is full or if we already spliced the requested length.
  */
-static bool __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
-			      unsigned int *offset, unsigned int *len,
-			      struct splice_pipe_desc *spd, struct sock *sk)
+static bool __maybe_unused __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
+					     unsigned int *offset, unsigned int *len,
+					     struct splice_pipe_desc *spd, struct sock *sk)
 {
 	int seg;
 
@@ -1908,6 +1909,7 @@ static bool __skb_splice_bits(struct sk_buff *skb, struct pipe_inode_info *pipe,
  * the frag list, if such a thing exists. We'd probably need to recurse to
  * handle that cleanly.
  */
+#ifdef CONFIG_SYSCALL_SPLICE
 int skb_splice_bits(struct sk_buff *skb, unsigned int offset,
 		    struct pipe_inode_info *pipe, unsigned int tlen,
 		    unsigned int flags)
@@ -1963,6 +1965,7 @@ done:
 
 	return ret;
 }
+#endif /* CONFIG_SYSCALL_SPLICE */
 
 /**
  *	skb_store_bits - store bits from kernel buffer to skb
