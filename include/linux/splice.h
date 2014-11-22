@@ -65,6 +65,7 @@ typedef int (splice_actor)(struct pipe_inode_info *, struct pipe_buffer *,
 typedef int (splice_direct_actor)(struct pipe_inode_info *,
 				  struct splice_desc *);
 
+#ifdef CONFIG_SYSCALL_SPLICE
 extern ssize_t splice_from_pipe(struct pipe_inode_info *, struct file *,
 				loff_t *, size_t, unsigned int,
 				splice_actor *);
@@ -74,13 +75,54 @@ extern ssize_t splice_to_pipe(struct pipe_inode_info *,
 			      struct splice_pipe_desc *);
 extern ssize_t splice_direct_to_actor(struct file *, struct splice_desc *,
 				      splice_direct_actor *);
+#else
+static inline ssize_t splice_from_pipe(struct pipe_inode_info *pipe, struct file *out,
+			 loff_t *ppos, size_t len, unsigned int flags,
+			 splice_actor *actor)
+{
+	return -EPERM;
+}
+
+static inline ssize_t __splice_from_pipe(struct pipe_inode_info *pipe, struct splice_desc *sd,
+			   splice_actor *actor)
+{
+	return -EPERM;
+}
+
+static inline ssize_t splice_to_pipe(struct pipe_inode_info *pipe,
+		       struct splice_pipe_desc *spd)
+{
+	return -EPERM;
+}
+
+static inline ssize_t splice_direct_to_actor(struct file *in, struct splice_desc *sd,
+			       splice_direct_actor *actor)
+{
+	return -EPERM;
+}
+#endif
 
 /*
  * for dynamic pipe sizing
  */
+#ifdef CONFIG_SYSCALL_SPLICE
 extern int splice_grow_spd(const struct pipe_inode_info *, struct splice_pipe_desc *);
 extern void splice_shrink_spd(struct splice_pipe_desc *);
 extern void spd_release_page(struct splice_pipe_desc *, unsigned int);
+#else
+static inline int splice_grow_spd(const struct pipe_inode_info *pipe, struct splice_pipe_desc *spd)
+{
+	return -EPERM;
+}
+
+static inline void splice_shrink_spd(struct splice_pipe_desc *spd)
+{
+}
+
+static inline void spd_release_page(struct splice_pipe_desc *spd, unsigned int i)
+{
+}
+#endif
 
 extern const struct pipe_buf_operations page_cache_pipe_buf_ops;
 
