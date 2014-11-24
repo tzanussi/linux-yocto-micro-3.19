@@ -1367,6 +1367,7 @@ static ssize_t fuse_dev_read(struct kiocb *iocb, const struct iovec *iov,
 	return fuse_dev_do_read(fc, file, &cs, iov_length(iov, nr_segs));
 }
 
+#ifdef CONFIG_SYSCALL_SPLICE
 static ssize_t fuse_dev_splice_read(struct file *in, loff_t *ppos,
 				    struct pipe_inode_info *pipe,
 				    size_t len, unsigned int flags)
@@ -1444,6 +1445,9 @@ out:
 	kfree(bufs);
 	return ret;
 }
+#else /* CONFIG_SYSCALL_SPLICE */
+#define fuse_dev_splice_read NULL
+#endif
 
 static int fuse_notify_poll(struct fuse_conn *fc, unsigned int size,
 			    struct fuse_copy_state *cs)
