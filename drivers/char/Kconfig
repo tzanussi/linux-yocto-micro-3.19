@@ -6,8 +6,19 @@ menu "Character devices"
 
 source "drivers/tty/Kconfig"
 
+config DEVMEM_BASE
+	bool "Base support for memory-access char devices" if EMBEDDED
+	default y
+	help
+	  Say Y here if you want to support the various character
+	  devices used to access memory, such as /dev/mem, /dev/null,
+	  /dev/zero, /dev/random, etc.  Many embedded systems can get
+	  by without these devices; doing so will save memory.  When
+	  in doubt, say "Y".
+
 config DEVKMEM
 	bool "/dev/kmem virtual device support"
+	depends on DEVMEM_BASE
 	default y
 	help
 	  Say Y here if you want to support the /dev/kmem device. The
@@ -577,6 +588,7 @@ config DEVPORT
 	bool
 	depends on !M68K
 	depends on ISA || PCI
+	depends on DEVMEM_BASE
 	default y
 
 source "drivers/s390/char/Kconfig"

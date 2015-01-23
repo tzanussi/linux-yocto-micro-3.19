@@ -34,6 +34,7 @@
 # include <linux/efi.h>
 #endif
 
+#ifdef CONFIG_DEVMEM_BASE
 #define DEVPORT_MINOR	4
 
 static inline unsigned long size_inside_page(unsigned long start,
@@ -876,5 +877,11 @@ static int __init chr_dev_init(void)
 
 	return tty_init();
 }
+#else
+static int __init chr_dev_init(void)
+{
+	return tty_init();
+}
+#endif /* CONFIG_DEVMEM_BASE */
 
 fs_initcall(chr_dev_init);
