@@ -593,28 +593,17 @@ static ssize_t write_port(struct file *file, const char __user *buf,
 }
 #endif
 
+#ifdef CONFIG_DEVNULL
 static ssize_t read_null(struct file *file, char __user *buf,
 			 size_t count, loff_t *ppos)
 {
 	return 0;
 }
 
-static ssize_t write_null(struct file *file, const char __user *buf,
-			  size_t count, loff_t *ppos)
-{
-	return count;
-}
-
 static ssize_t aio_read_null(struct kiocb *iocb, const struct iovec *iov,
 			     unsigned long nr_segs, loff_t pos)
 {
 	return 0;
-}
-
-static ssize_t aio_write_null(struct kiocb *iocb, const struct iovec *iov,
-			      unsigned long nr_segs, loff_t pos)
-{
-	return iov_length(iov, nr_segs);
 }
 
 static int pipe_to_null(struct pipe_inode_info *info, struct pipe_buffer *buf,
@@ -627,6 +616,21 @@ static ssize_t splice_write_null(struct pipe_inode_info *pipe, struct file *out,
 				 loff_t *ppos, size_t len, unsigned int flags)
 {
 	return splice_from_pipe(pipe, out, ppos, len, flags, pipe_to_null);
+}
+#endif
+
+static ssize_t __maybe_unused write_null(struct file *file,
+					 const char __user *buf,
+					 size_t count, loff_t *ppos)
+{
+	return count;
+}
+
+static ssize_t __maybe_unused aio_write_null(struct kiocb *iocb,
+					     const struct iovec *iov,
+					     unsigned long nr_segs, loff_t pos)
+{
+	return iov_length(iov, nr_segs);
 }
 
 static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
@@ -669,7 +673,8 @@ static ssize_t write_full(struct file *file, const char __user *buf,
  * can fopen() both devices with "a" now.  This was previously impossible.
  * -- SRB.
  */
-static loff_t null_lseek(struct file *file, loff_t offset, int orig)
+static loff_t __maybe_unused null_lseek(struct file *file, loff_t offset,
+					int orig)
 {
 	return file->f_pos = 0;
 }
@@ -742,6 +747,7 @@ static const struct file_operations kmem_fops = {
 };
 #endif
 
+#ifdef CONFIG_DEVNULL
 static const struct file_operations null_fops = {
 	.llseek		= null_lseek,
 	.read		= read_null,
@@ -750,6 +756,7 @@ static const struct file_operations null_fops = {
 	.aio_write	= aio_write_null,
 	.splice_write	= splice_write_null,
 };
+#endif
 
 #ifdef CONFIG_DEVPORT
 static const struct file_operations port_fops = {
@@ -798,7 +805,9 @@ static const struct memdev {
 #ifdef CONFIG_DEVKMEM
 	 [2] = { "kmem", 0, &kmem_fops, &directly_mappable_cdev_bdi },
 #endif
+#ifdef CONFIG_DEVNULL
 	 [3] = { "null", 0666, &null_fops, NULL },
+#endif
 #ifdef CONFIG_DEVPORT
 	 [4] = { "port", 0, &port_fops, NULL },
 #endif
