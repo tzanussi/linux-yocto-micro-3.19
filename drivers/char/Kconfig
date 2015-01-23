@@ -56,6 +56,17 @@ config DEVZERO
 	  systems with strictly controlled userspace may not need it.
 	  When in doubt, say "Y".
 
+config DEVFULL
+	bool "/dev/full virtual device support" if EMBEDDED
+	depends on DEVMEM_BASE
+	default y
+	help
+	  Say Y here if you want to support the /dev/full device. The
+	  /dev/full device is used mainly for testing how programs
+	  respond to ENOSPC, and can be disabled on systems that will
+	  never use it in production, such as many embedded systems.
+	  When in doubt, say "Y".
+
 config SGI_SNSC
 	bool "SGI Altix system controller communication support"
 	depends on (IA64_SGI_SN2 || IA64_GENERIC)

@@ -665,11 +665,13 @@ static int mmap_zero(struct file *file, struct vm_area_struct *vma)
 }
 #endif
 
+#ifdef CONFIG_DEVFULL
 static ssize_t write_full(struct file *file, const char __user *buf,
 			  size_t count, loff_t *ppos)
 {
 	return -ENOSPC;
 }
+#endif
 
 /*
  * Special lseek() function for /dev/null and /dev/zero.  Most notably, you
@@ -791,12 +793,14 @@ static struct backing_dev_info zero_bdi = {
 };
 #endif
 
+#ifdef CONFIG_DEVFULL
 static const struct file_operations full_fops = {
 	.llseek		= full_lseek,
 	.read		= new_sync_read,
 	.read_iter	= read_iter_zero,
 	.write		= write_full,
 };
+#endif
 
 static const struct memdev {
 	const char *name;
@@ -819,7 +823,9 @@ static const struct memdev {
 #ifdef CONFIG_DEVZERO
 	 [5] = { "zero", 0666, &zero_fops, &zero_bdi },
 #endif
+#ifdef CONFIG_DEVFULL
 	 [7] = { "full", 0666, &full_fops, NULL },
+#endif
 	 [8] = { "random", 0666, &random_fops, NULL },
 	 [9] = { "urandom", 0666, &urandom_fops, NULL },
 #ifdef CONFIG_PRINTK
