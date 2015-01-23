@@ -1339,7 +1339,7 @@ void rand_initialize_disk(struct gendisk *disk)
 }
 #endif
 
-static ssize_t
+static ssize_t __maybe_unused
 _random_read(int nonblock, char __user *buf, size_t nbytes)
 {
 	ssize_t n;
@@ -1378,7 +1378,7 @@ random_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 }
 #endif
 
-static ssize_t
+static ssize_t __maybe_unused
 urandom_read(struct file *file, char __user *buf, size_t nbytes, loff_t *ppos)
 {
 	int ret;
@@ -1530,6 +1530,7 @@ const struct file_operations urandom_fops = {
 };
 #endif
 
+#ifdef CONFIG_GETRANDOM_SYSCALL
 SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
 		unsigned int, flags)
 {
@@ -1552,6 +1553,7 @@ SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
 	}
 	return urandom_read(NULL, buf, count, NULL);
 }
+#endif
 
 /***************************************************************
  * Random UUID interface
