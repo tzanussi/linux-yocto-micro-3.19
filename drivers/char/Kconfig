@@ -595,11 +595,16 @@ config TELCLOCK
 	  controlling the behavior of this hardware.
 
 config DEVPORT
-	bool
+	bool "/dev/port virtual device support"
 	depends on !M68K
 	depends on ISA || PCI
 	depends on DEVMEM_BASE
 	default y
+	help
+	  Say Y here if you want to support the /dev/port device. The
+	  /dev/port device is a character device that allows userspace
+	  access to I/O ports, which may be needed by some programs.
+	  When in doubt, say "Y".
 
 source "drivers/s390/char/Kconfig"
 
