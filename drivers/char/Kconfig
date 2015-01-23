@@ -78,6 +78,17 @@ config DEVRANDOM
 	  disabled on systems that will never use it in production,
 	  such as many embedded systems.  When in doubt, say "Y".
 
+config DEVURANDOM
+	bool "/dev/urandom virtual device support" if EMBEDDED
+	depends on DEVMEM_BASE
+	default y
+	help
+	  Say Y here if you want to support the /dev/urandom
+	  device. The /dev/urandom device is the nonblocking userspace
+	  interface to the kernel random number generator, and can be
+	  disabled on systems that will never use it in production,
+	  such as many embedded systems.  When in doubt, say "Y".
+
 config SGI_SNSC
 	bool "SGI Altix system controller communication support"
 	depends on (IA64_SGI_SN2 || IA64_GENERIC)

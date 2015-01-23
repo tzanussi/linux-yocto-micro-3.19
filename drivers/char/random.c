@@ -1520,6 +1520,7 @@ const struct file_operations random_fops = {
 };
 #endif
 
+#ifdef CONFIG_DEVURANDOM
 const struct file_operations urandom_fops = {
 	.read  = urandom_read,
 	.write = random_write,
@@ -1527,6 +1528,7 @@ const struct file_operations urandom_fops = {
 	.fasync = random_fasync,
 	.llseek = noop_llseek,
 };
+#endif
 
 SYSCALL_DEFINE3(getrandom, char __user *, buf, size_t, count,
 		unsigned int, flags)
