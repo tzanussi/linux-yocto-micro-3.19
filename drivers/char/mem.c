@@ -633,7 +633,8 @@ static ssize_t __maybe_unused aio_write_null(struct kiocb *iocb,
 	return iov_length(iov, nr_segs);
 }
 
-static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
+static ssize_t __maybe_unused read_iter_zero(struct kiocb *iocb,
+					     struct iov_iter *iter)
 {
 	size_t written = 0;
 
@@ -652,6 +653,7 @@ static ssize_t read_iter_zero(struct kiocb *iocb, struct iov_iter *iter)
 	return written;
 }
 
+#ifdef CONFIG_DEVZERO
 static int mmap_zero(struct file *file, struct vm_area_struct *vma)
 {
 #ifndef CONFIG_MMU
@@ -661,6 +663,7 @@ static int mmap_zero(struct file *file, struct vm_area_struct *vma)
 		return shmem_zero_setup(vma);
 	return 0;
 }
+#endif
 
 static ssize_t write_full(struct file *file, const char __user *buf,
 			  size_t count, loff_t *ppos)
@@ -767,6 +770,7 @@ static const struct file_operations port_fops = {
 };
 #endif
 
+#ifdef CONFIG_DEVZERO
 static const struct file_operations zero_fops = {
 	.llseek		= zero_lseek,
 	.read		= new_sync_read,
@@ -785,6 +789,7 @@ static struct backing_dev_info zero_bdi = {
 	.name		= "char/mem",
 	.capabilities	= BDI_CAP_MAP_COPY | BDI_CAP_NO_ACCT_AND_WRITEBACK,
 };
+#endif
 
 static const struct file_operations full_fops = {
 	.llseek		= full_lseek,
@@ -811,7 +816,9 @@ static const struct memdev {
 #ifdef CONFIG_DEVPORT
 	 [4] = { "port", 0, &port_fops, NULL },
 #endif
+#ifdef CONFIG_DEVZERO
 	 [5] = { "zero", 0666, &zero_fops, &zero_bdi },
+#endif
 	 [7] = { "full", 0666, &full_fops, NULL },
 	 [8] = { "random", 0666, &random_fops, NULL },
 	 [9] = { "urandom", 0666, &urandom_fops, NULL },
@@ -864,12 +871,12 @@ static struct class *mem_class;
 static int __init chr_dev_init(void)
 {
 	int minor;
-	int err;
 
-	err = bdi_init(&zero_bdi);
+#ifdef CONFIG_DEVZERO
+	int err = bdi_init(&zero_bdi);
 	if (err)
 		return err;
-
+#endif
 	if (register_chrdev(MEM_MAJOR, "mem", &memory_fops))
 		printk("unable to get major %d for memory devs\n", MEM_MAJOR);
 
