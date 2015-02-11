@@ -166,6 +166,20 @@ cond_syscall(sys_fstat);
 cond_syscall(sys_stat);
 cond_syscall(sys_uname);
 cond_syscall(sys_olduname);
+cond_syscall(sys_setuid);
+cond_syscall(sys_setregid);
+cond_syscall(sys_setgid);
+cond_syscall(sys_setreuid);
+cond_syscall(sys_setresuid);
+cond_syscall(sys_getresuid);
+cond_syscall(sys_setresgid);
+cond_syscall(sys_getresgid);
+cond_syscall(sys_setgroups);
+cond_syscall(sys_getgroups);
+cond_syscall(sys_setfsuid);
+cond_syscall(sys_setfsgid);
+cond_syscall(sys_capget);
+cond_syscall(sys_capset);
 
 /* arch-specific weak syscall entries */
 cond_syscall(sys_pciconfig_read);
