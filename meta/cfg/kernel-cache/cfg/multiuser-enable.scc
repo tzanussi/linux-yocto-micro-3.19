@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable multiuser"
+define KFEATURE_COMPATIBILITY all
+
+kconf non-hardware multiuser-enable.cfg
