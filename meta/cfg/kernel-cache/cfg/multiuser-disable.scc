@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable multiuser"
+define KFEATURE_COMPATIBILITY all
+
+kconf non-hardware multiuser-disable.cfg
