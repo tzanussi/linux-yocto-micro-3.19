@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable obsolete syscalls"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware obsolete-syscalls-disable.cfg
