@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable sysfs for GPIO access from userspace"
+define KFEATURE_COMPATIBILITY all
+
+kconf hardware gpio-user-disable.cfg
