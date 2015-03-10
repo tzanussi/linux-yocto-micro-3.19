@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable devmem random device options"
+define KFEATURE_COMPATIBILITY all
+
+kconf non-hardware devmem-random-disable.cfg
