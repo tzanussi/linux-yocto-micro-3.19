@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable NTP support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware ntp-disable.cfg
