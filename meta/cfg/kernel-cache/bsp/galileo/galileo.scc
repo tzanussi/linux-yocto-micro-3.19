@@ -1,3 +1,4 @@
 kconf hardware galileo.cfg
 kconf hardware cfg/cc-optimize-for-size.cfg
 kconf hardware cfg/optimize-inlining.cfg
+kconf hardware cfg/devmem-enable.cfg
