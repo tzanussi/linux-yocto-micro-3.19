@@ -1,0 +1,9 @@
+define KMACHINE minnowmax-64
+define KTYPE micro
+define KARCH x86_64
+
+include ktypes/micro/micro.scc
+branch minnowmax-64
+
+include intel-common-drivers.scc
+include minnowmax-64.scc

@@ -1,0 +1,10 @@
+include cfg/x86.scc
+
+nclude features/soc/baytrail/baytrail.scc
+
+kconf hardware minnowmax.cfg
+
+kconf hardware cfg/cc-optimize-for-size.cfg
+kconf hardware cfg/optimize-inlining.cfg
+kconf hardware cfg/devmem-enable.cfg
+kconf hardware cfg/net/reno.cfg
