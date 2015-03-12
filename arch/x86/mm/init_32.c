@@ -735,31 +735,18 @@ static void __init test_wp_bit(void)
 	}
 }
 
-void __init mem_init(void)
+#ifdef CONFIG_VIRT_KMEM
+void mem_init_print_layout(struct seq_file *m)
 {
-	pci_iommu_alloc();
+	if (!m)
+		return;
 
-#ifdef CONFIG_FLATMEM
-	BUG_ON(!mem_map);
-#endif
-	/*
-	 * With CONFIG_DEBUG_PAGEALLOC initialization of highmem pages has to
-	 * be done before free_all_bootmem(). Memblock use free low memory for
-	 * temporary data (see find_range_array()) and for this purpose can use
-	 * pages that was already passed to the buddy allocator, hence marked as
-	 * not accessible in the page tables when compiled with
-	 * CONFIG_DEBUG_PAGEALLOC. Otherwise order of initialization is not
-	 * important here.
-	 */
-	set_highmem_pages_init();
-
-	/* this will put all low memory onto the freelists */
-	free_all_bootmem();
-
-	after_bootmem = 1;
-
-	mem_init_print_info(NULL);
+	seq_printf(m, "virtual kernel memory layout:\n"
+#else
+void __init mem_init_print_layout(struct seq_file *m)
+{
 	printk(KERN_INFO "virtual kernel memory layout:\n"
+#endif
 		"    fixmap  : 0x%08lx - 0x%08lx   (%4ld kB)\n"
 #ifdef CONFIG_HIGHMEM
 		"    pkmap   : 0x%08lx - 0x%08lx   (%4ld kB)\n"
@@ -792,6 +779,33 @@ void __init mem_init(void)
 
 		(unsigned long)&_text, (unsigned long)&_etext,
 		((unsigned long)&_etext - (unsigned long)&_text) >> 10);
+}
+
+void __init mem_init(void)
+{
+	pci_iommu_alloc();
+
+#ifdef CONFIG_FLATMEM
+	BUG_ON(!mem_map);
+#endif
+	/*
+	 * With CONFIG_DEBUG_PAGEALLOC initialization of highmem pages has to
+	 * be done before free_all_bootmem(). Memblock use free low memory for
+	 * temporary data (see find_range_array()) and for this purpose can use
+	 * pages that was already passed to the buddy allocator, hence marked as
+	 * not accessible in the page tables when compiled with
+	 * CONFIG_DEBUG_PAGEALLOC. Otherwise order of initialization is not
+	 * important here.
+	 */
+	set_highmem_pages_init();
+
+	/* this will put all low memory onto the freelists */
+	free_all_bootmem();
+
+	after_bootmem = 1;
+
+	mem_init_print_info(NULL, NULL);
+	mem_init_print_layout(NULL);
 
 	/*
 	 * Check boundaries twice: Some fundamental inconsistencies can

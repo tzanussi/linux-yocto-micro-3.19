@@ -618,3 +618,12 @@ config MAX_STACK_SIZE_MB
 	  changed to a smaller value in which case that is used.
 
 	  A sane initial value is 80 MB.
+
+config VIRT_KMEM
+	bool "Enable /proc/virt_kmem"
+	default n
+	help
+	  This option creates a /proc/virt_kmem file that displays the
+	  same memory info and layout values as displayed by boot
+	  meminfo.  This is mainly meant for systems that have printk
+	  disabled and therefore couldn't see these values otherwise.

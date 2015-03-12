@@ -17,6 +17,8 @@
 #endif
 #include <asm/page.h>
 #include <asm/pgtable.h>
+#include <asm/fixmap.h>
+#include <asm/pgtable.h>
 #include "internal.h"
 
 void __attribute__((weak)) arch_report_meminfo(struct seq_file *m)
@@ -234,3 +236,31 @@ static int __init proc_meminfo_init(void)
 	return 0;
 }
 fs_initcall(proc_meminfo_init);
+
+/* virt kmem info */
+static int virt_kmem_proc_show(struct seq_file *m, void *v)
+{
+	mem_init_print_info(m, NULL);
+	mem_init_print_layout(m);
+
+	return 0;
+}
+
+static int virt_kmem_proc_open(struct inode *inode, struct file *file)
+{
+	return single_open(file, virt_kmem_proc_show, NULL);
+}
+
+static const struct file_operations virt_kmem_proc_fops = {
+	.open		= virt_kmem_proc_open,
+	.read		= seq_read,
+	.llseek		= seq_lseek,
+	.release	= single_release,
+};
+
+static int __init proc_virt_kmem_init(void)
+{
+	proc_create("virt_kmem", 0, NULL, &virt_kmem_proc_fops);
+	return 0;
+}
+fs_initcall(proc_virt_kmem_init);

@@ -5537,8 +5537,11 @@ void free_highmem_page(struct page *page)
 }
 #endif
 
-
-void __init mem_init_print_info(const char *str)
+#ifdef CONFIG_VIRT_KMEM
+void mem_init_print_info(struct seq_file *m, const char *str)
+#else
+void __init mem_init_print_info(struct seq_file *m, const char *str)
+#endif
 {
 	unsigned long physpages, codesize, datasize, rosize, bss_size;
 	unsigned long init_code_size, init_data_size;
@@ -5573,7 +5576,14 @@ void __init mem_init_print_info(const char *str)
 
 #undef	adj_init_size
 
+#ifdef CONFIG_VIRT_KMEM
+	if (!m)
+		return;
+
+	seq_printf(m, "Memory: %luK/%luK available "
+#else
 	pr_info("Memory: %luK/%luK available "
+#endif
 	       "(%luK kernel code, %luK rwdata, %luK rodata, "
 	       "%luK init, %luK bss, %luK reserved, %luK cma-reserved"
 #ifdef	CONFIG_HIGHMEM
