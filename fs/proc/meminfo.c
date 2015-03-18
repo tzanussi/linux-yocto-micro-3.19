@@ -237,6 +237,12 @@ static int __init proc_meminfo_init(void)
 }
 fs_initcall(proc_meminfo_init);
 
+#ifdef CONFIG_VIRT_KMEM
+void __weak mem_init_print_layout(struct seq_file *m) {}
+#else
+void __init __weak mem_init_print_layout(struct seq_file *m) {}
+#endif
+
 /* virt kmem info */
 static int virt_kmem_proc_show(struct seq_file *m, void *v)
 {

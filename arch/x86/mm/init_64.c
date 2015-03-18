@@ -1073,7 +1073,7 @@ void __init mem_init(void)
 	kclist_add(&kcore_vsyscall, (void *)VSYSCALL_ADDR,
 			 PAGE_SIZE, KCORE_OTHER);
 
-	mem_init_print_info(NULL);
+	mem_init_print_info(NULL, NULL);
 }
 
 #ifdef CONFIG_DEBUG_RODATA
