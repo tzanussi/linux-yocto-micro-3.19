@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable NTP support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware ntp-enable.cfg
