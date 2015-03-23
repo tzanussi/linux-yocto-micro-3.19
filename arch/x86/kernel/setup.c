@@ -881,7 +881,7 @@ void __init setup_arch(char **cmdline_p)
 	 */
 	clone_pgd_range(swapper_pg_dir     + KERNEL_PGD_BOUNDARY,
 			initial_page_table + KERNEL_PGD_BOUNDARY,
-			KERNEL_PGD_PTRS);
+			BOOT_PGD_COPY_PTRS);
 
 	load_cr3(swapper_pg_dir);
 	/*

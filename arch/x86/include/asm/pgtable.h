@@ -681,6 +681,13 @@ static inline int pgd_none(pgd_t pgd)
 #define KERNEL_PGD_BOUNDARY	pgd_index(PAGE_OFFSET)
 #define KERNEL_PGD_PTRS		(PTRS_PER_PGD - KERNEL_PGD_BOUNDARY)
 
+#ifdef CONFIG_XIP_KERNEL
+#define BOOT_PGD_COPY_PTRS \
+	((pgd_index((unsigned long)_end)  - pgd_index(PAGE_OFFSET)) + 4)
+#else
+#define BOOT_PGD_COPY_PTRS	KERNEL_PGD_PTRS
+#endif
+
 #ifndef __ASSEMBLY__
 
 extern int direct_gbpages;
