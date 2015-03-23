@@ -778,6 +778,7 @@ static void __init trim_bios_range(void)
 }
 
 /* called before trim_bios_range() to spare extra sanitize */
+#ifndef CONFIG_XIP_KERNEL
 static void __init e820_add_kernel_range(void)
 {
 	u64 start = __pa_symbol(_text);
@@ -797,6 +798,11 @@ static void __init e820_add_kernel_range(void)
 	e820_remove_range(start, size, E820_RAM, 0);
 	e820_add_region(start, size, E820_RAM);
 }
+#else
+static void __init e820_add_kernel_range(void)
+{
+}
+#endif
 
 static unsigned reserve_low = CONFIG_X86_RESERVE_LOW << 10;
 
