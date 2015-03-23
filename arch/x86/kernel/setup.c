@@ -973,9 +973,16 @@ void __init setup_arch(char **cmdline_p)
 
 	mpx_mm_init(&init_mm);
 
+#ifndef CONFIG_XIP_KERNEL
 	code_resource.start = __pa_symbol(_text);
 	code_resource.end = __pa_symbol(_etext)-1;
+	data_resource.start = _pa(_sdata)-1;
+#else
+	code_resource.start = CONFIG_XIP_BASE;
+	code_resource.end = (phys_addr_t)phys_sdata-1;
 	data_resource.start = __pa_symbol(_etext);
+#endif
+
 	data_resource.end = __pa_symbol(_edata)-1;
 	bss_resource.start = __pa_symbol(__bss_start);
 	bss_resource.end = __pa_symbol(__bss_stop)-1;
