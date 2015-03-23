@@ -367,6 +367,82 @@ bool pfn_range_is_mapped(unsigned long start_pfn, unsigned long end_pfn)
 	return false;
 }
 
+#ifdef CONFIG_XIP_KERNEL
+/*
+ * Cut the .text virtual address out of mem range b/c the mapping
+ * is already correctly setup
+ */
+static inline void snip_xip_text(struct map_range *mr, int *nr_range)
+{
+	int i;
+
+	for (i = 0; i < *nr_range; i++) {
+		long diff;
+
+		if (mr[i].start <= CONFIG_PHYSICAL_START &&
+		mr[i].end <= CONFIG_PHYSICAL_START)
+			continue;
+		if (mr[i].start >= __pa_symbol(_sdata))
+			continue;
+
+		diff = mr[i].start - CONFIG_PHYSICAL_START;
+		if (diff < 0) { /* range starts below .text and includes it */
+			diff = mr[i].end - __pa_symbol(_sdata);
+
+			/* shorten segment so it ends just before .text */
+			mr[i].end = CONFIG_PHYSICAL_START;
+
+			/* if segment goes past .text, add 2nd segment*/
+			if (diff > 0) {
+				/* move next section down 1 */
+				if (i + 1 < *nr_range) {
+					memmove(&mr[i + 1], &mr[i + 2],
+						sizeof(struct map_range[
+						*nr_range - i - 2]));
+				}
+				mr[i + 1].start = __pa_symbol(_sdata);
+				mr[i + 1].end =  mr[i + 1].start + diff;
+				mr[i + 1].page_size_mask = 0;
+				*nr_range = *nr_range + 1;
+				i++;
+			}
+		} else if (diff == 0) {
+			diff = mr[i].end - __pa_symbol(_sdata);
+			if (diff > 0) {
+				mr[i].start = __pa_symbol(_sdata);
+				mr[i].end = mr[i].start + diff;
+				mr[i].page_size_mask = 0;
+			} else {
+				/* delete this range */
+				memmove(&mr[i + 1], &mr[i], sizeof(
+					struct map_range[*nr_range - i - 1]));
+				*nr_range = *nr_range - 1;
+				i--;
+			}
+		} else if (diff > 0) {
+			long ediff = mr[i].end - __pa_symbol(_sdata);
+
+			if (ediff > 0) {
+				mr[i].start = __pa_symbol(_sdata);
+				mr[i].end = mr[i].start + ediff;
+				mr[i].page_size_mask = 0;
+			} else {
+				/* delete this range */
+				memmove(&mr[i + 1], &mr[i], sizeof(
+					struct map_range[*nr_range - i - 1]));
+				*nr_range = *nr_range - 1;
+				i--;
+			}
+		}
+		break;
+	}
+}
+#else
+static inline void snip_xip_text(struct map_range *mr, int *mr_range)
+{
+}
+#endif
+
 /*
  * Setup the direct mapping of the physical memory at PAGE_OFFSET.
  * This runs before bootmem is initialized and gets pages directly from
@@ -384,6 +460,8 @@ unsigned long __init_refok init_memory_mapping(unsigned long start,
 
 	memset(mr, 0, sizeof(mr));
 	nr_range = split_mem_range(mr, 0, start, end);
+
+	snip_xip_text(mr, &nr_range);
 
 	for (i = 0; i < nr_range; i++)
 		ret = kernel_physical_mapping_init(mr[i].start, mr[i].end,
