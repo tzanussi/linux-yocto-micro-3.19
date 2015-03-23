@@ -291,6 +291,25 @@ config ZONE_DMA
 
 	  If unsure, say Y.
 
+config XIP_KERNEL
+	bool "eXecute-In-Place (XIP) support" if (X86_32 && EXPERT && EMBEDDED)
+	depends on !MODULES && !X86_PAE && !SMP
+	default n
+	help
+	  With this option enabled, the text and any read-only segments of
+	  the kernel are not copied from their initial location to their usual
+	  location in RAM. As a result, when the kernel is located in storage
+	  that is addressable by the CPU, the kernel text and read-only data
+	  segments are never loaded into memory, thereby using less RAM.
+
+	  Only enable this option if you know what you're doing.
+
+config XIP_BASE
+	hex "Physical address of XIP kernel" if XIP_KERNEL
+	default "0xFF800000"
+	help
+	  The physical address for the beginning of the vmlinux file.
+
 config SMP
 	bool "Symmetric multi-processing support"
 	---help---
