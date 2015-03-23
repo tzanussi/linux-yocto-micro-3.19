@@ -133,6 +133,9 @@ SECTIONS
 	RO_DATA(PAGE_SIZE)
 	X64_ALIGN_DEBUG_RODATA_END
 
+	phys_sdata = LOADADDR(.data);
+	phys_edata = phys_sdata + (_end_nonzero - _sdata);
+
 	/* Data */
 	.data : AT(ADDR(.data) - LOAD_OFFSET) DATA_ALIGN {
 		/* Start of data section */
@@ -319,6 +322,7 @@ SECTIONS
 		NOSAVE_DATA
 	}
 #endif
+	_end_nonzero = .;
 
 	/* BSS */
 	. = ALIGN(PAGE_SIZE);

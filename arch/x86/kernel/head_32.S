@@ -86,6 +86,28 @@ RESERVE_BRK(pagetables, INIT_MAP_SIZE)
  */
 __HEAD
 ENTRY(startup_32)
+
+#ifdef CONFIG_XIP_KERNEL
+	/*
+	 * Copy writable sections into RAM
+	 */
+
+	movl %esi, %ebp	# Preserve pointer to zero-page
+
+	leal pa(_sdata), %edi
+	leal phys_edata, %ecx
+	leal phys_sdata, %esi
+	subl %esi, %ecx
+
+	cld
+xip_data_cp:
+	lodsb
+	stosb
+	loop xip_data_cp
+
+	movl %ebp, %esi
+#endif
+
 	movl pa(stack_start),%ecx
 	
 	/* test KEEP_SEGMENTS flag to see if the bootloader is asking
