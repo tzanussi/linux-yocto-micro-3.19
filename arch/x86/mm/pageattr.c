@@ -383,6 +383,17 @@ static pte_t *_lookup_address_cpa(struct cpa_data *cpa, unsigned long address,
         return lookup_address(address, level);
 }
 
+#ifdef CONFIG_XIP_KERNEL
+unsigned long slow_xip_phys_to_virt(phys_addr_t x)
+{
+	if (x >= CONFIG_XIP_BASE && x <= (phys_addr_t)phys_sdata) {
+		unsigned long off = x - CONFIG_XIP_BASE;
+		return PAGE_OFFSET + off;
+	}
+	return x + PAGE_OFFSET;
+}
+#endif
+
 /*
  * Lookup the PMD entry for a virtual address. Return a pointer to the entry
  * or NULL if not present.

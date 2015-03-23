@@ -6,6 +6,7 @@
 #ifdef __KERNEL__
 
 #include <asm/page_types.h>
+#include <asm/pgtable_types.h>
 
 #ifdef CONFIG_X86_64
 #include <asm/page_64.h>
@@ -37,8 +38,15 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
 	alloc_page_vma(GFP_HIGHUSER | __GFP_ZERO | movableflags, vma, vaddr)
 #define __HAVE_ARCH_ALLOC_ZEROED_USER_HIGHPAGE
 
+
+#ifdef CONFIG_XIP_KERNEL	/* TODO special case text translations */
+#define __pa(x)		slow_virt_to_phys((void *)(x))
+#define __pa_nodebug	slow_virt_to_phys((void *)(x))
+#else
 #define __pa(x)		__phys_addr((unsigned long)(x))
 #define __pa_nodebug(x)	__phys_addr_nodebug((unsigned long)(x))
+#endif
+
 /* __pa_symbol should be used for C visible symbols.
    This seems to be the official gcc blessed way to do such arithmetic. */
 /*
@@ -51,7 +59,14 @@ static inline void copy_user_page(void *to, void *from, unsigned long vaddr,
 #define __pa_symbol(x) \
 	__phys_addr_symbol(__phys_reloc_hide((unsigned long)(x)))
 
+
+#ifdef CONFIG_XIP_KERNEL
+extern unsigned long slow_xip_phys_to_virt(phys_addr_t);
+
+#define __va(x)			((void *)slow_xip_phys_to_virt((phys_addr_t)x))
+#else
 #define __va(x)			((void *)((unsigned long)(x)+PAGE_OFFSET))
+#endif
 
 #define __boot_va(x)		__va(x)
 #define __boot_pa(x)		__pa(x)
