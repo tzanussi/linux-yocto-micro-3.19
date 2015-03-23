@@ -20,6 +20,15 @@
 #define LOAD_OFFSET __START_KERNEL_map
 #endif
 
+#ifdef CONFIG_XIP_KERNEL
+#define AT(x)	AT(x + LOAD_OFFSET + PHYS_XIP_OFFSET)
+#define TEXT_ALIGN	ALIGN(0x1000)
+#define DATA_ALIGN	ALIGN(0x200000)
+#else
+#define TEXT_ALIGN
+#define DATA_ALIGN
+#endif
+
 #include <asm-generic/vmlinux.lds.h>
 #include <asm/asm-offsets.h>
 #include <asm/thread_info.h>
@@ -89,8 +98,12 @@ SECTIONS
         phys_startup_64 = startup_64 - LOAD_OFFSET;
 #endif
 
+#ifdef CONFIG_XIP_KERNEL
+	. += SIZEOF_HEADERS;
+#endif
+
 	/* Text and read-only data */
-	.text :  AT(ADDR(.text) - LOAD_OFFSET) {
+	.text :  AT(ADDR(.text) - LOAD_OFFSET) TEXT_ALIGN {
 		_text = .;
 		/* bootstrapping code */
 		HEAD_TEXT
@@ -121,7 +134,7 @@ SECTIONS
 	X64_ALIGN_DEBUG_RODATA_END
 
 	/* Data */
-	.data : AT(ADDR(.data) - LOAD_OFFSET) {
+	.data : AT(ADDR(.data) - LOAD_OFFSET) DATA_ALIGN {
 		/* Start of data section */
 		_sdata = .;
 

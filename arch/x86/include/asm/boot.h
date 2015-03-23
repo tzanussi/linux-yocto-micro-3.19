@@ -10,6 +10,10 @@
 				+ (CONFIG_PHYSICAL_ALIGN - 1)) \
 				& ~(CONFIG_PHYSICAL_ALIGN - 1))
 
+#ifdef CONFIG_XIP_KERNEL
+#define PHYS_XIP_OFFSET (CONFIG_XIP_BASE - (LOAD_OFFSET + LOAD_PHYSICAL_ADDR))
+#endif
+
 /* Minimum kernel alignment, as a power of two */
 #ifdef CONFIG_X86_64
 #define MIN_KERNEL_ALIGN_LG2	PMD_SHIFT
