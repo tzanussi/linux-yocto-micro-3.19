@@ -856,8 +856,13 @@ dump_kernel_offset(struct notifier_block *self, unsigned long v, void *p)
 
 void __init setup_arch(char **cmdline_p)
 {
+#ifdef CONFIG_XIP_KERNEL
+	memblock_reserve(__pa_symbol(_sdata),
+			(unsigned long)__bss_stop - (unsigned long)_sdata);
+#else
 	memblock_reserve(__pa_symbol(_text),
 			 (unsigned long)__bss_stop - (unsigned long)_text);
+ #endif
 
 	early_reserve_initrd();
 
