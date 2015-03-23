@@ -228,6 +228,7 @@ SECTIONS
 	}
 #endif
 
+#ifndef CONFIG_XIP_KERNEL
 	/*
 	 * start address and size of operations which during runtime
 	 * can be patched with virtualization friendly instructions or
@@ -261,6 +262,7 @@ SECTIONS
 	.altinstr_replacement : AT(ADDR(.altinstr_replacement) - LOAD_OFFSET) {
 		*(.altinstr_replacement)
 	}
+#endif
 
 	/*
 	 * struct iommu_table_entry entries are injected in this section.

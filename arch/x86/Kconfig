@@ -310,6 +310,51 @@ config XIP_BASE
 	help
 	  The physical address for the beginning of the vmlinux file.
 
+menu "XIP Alternative Instructions"
+	depends on XIP_KERNEL
+
+	config XIP_ENABLE_X86_FEATURE_POPCNT
+	bool "Enable POPCNT alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_BUG_11AP
+	bool "Enable 11AP alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_XMM2
+	bool "Enable XMM2 alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_MFENCE_RDTSC
+	bool "Enable MFENCE_RDTSC alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_LFENCE_RDTSC
+	bool "Enable LFENCE_RDTSC alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_3DNOW
+	bool "Enable 3DNOW alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_XMM
+	bool "Enabled XMM alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_CLFLUSHOPT
+	bool "Enable CLFLUSHOPT alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_XSAVEOPT
+	bool "Enable XSAVEOPT alternative instructions"
+	default n
+
+	config XIP_ENABLE_X86_FEATURE_XSAVES
+	bool "Enable XSAVES alternative instructions"
+	default n
+
+endmenu
+
 config SMP
 	bool "Symmetric multi-processing support"
 	---help---

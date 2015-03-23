@@ -762,7 +762,9 @@ static int do_boot_cpu(int apicid, int cpu, struct task_struct *idle)
 	unsigned long timeout;
 
 	/* Just in case we booted with a single CPU. */
+#ifndef CONFIG_XIP_KERNEL
 	alternatives_enable_smp();
+#endif
 
 	idle->thread.sp = (unsigned long) (((struct pt_regs *)
 			  (THREAD_SIZE +  task_stack_page(idle))) - 1);

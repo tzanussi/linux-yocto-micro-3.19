@@ -83,7 +83,9 @@ void __init check_bugs(void)
 
 	init_utsname()->machine[1] =
 		'0' + (boot_cpu_data.x86 > 6 ? 6 : boot_cpu_data.x86);
+#ifndef CONFIG_XIP_KERNEL
 	alternative_instructions();
+#endif
 
 	/*
 	 * kernel_fpu_begin/end() in check_fpu() relies on the patched

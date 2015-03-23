@@ -34,9 +34,11 @@ void __init init_vdso_image(const struct vdso_image *image)
 		image->text_mapping.pages[i] =
 			virt_to_page(image->data + i*PAGE_SIZE);
 
+#ifndef CONFIG_XIP_KERNEL
 	apply_alternatives((struct alt_instr *)(image->data + image->alt),
 			   (struct alt_instr *)(image->data + image->alt +
 						image->alt_len));
+#endif
 }
 
 struct linux_binprm;

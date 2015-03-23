@@ -1260,7 +1260,9 @@ void __init setup_arch(char **cmdline_p)
 
 	mcheck_init();
 
+#ifndef CONFIG_XIP_KERNEL
 	arch_init_ideal_nops();
+#endif
 
 	register_refined_jiffies(CLOCK_TICK_RATE);
 

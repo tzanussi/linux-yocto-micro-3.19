@@ -7,6 +7,10 @@
 #include <asm/asm.h>
 #include <asm/ptrace.h>
 
+#ifdef CONFIG_XIP_KERNEL
+#include <asm/alternative-xip.h>
+#else
+
 /*
  * Alternative inline assembly for SMP.
  *
@@ -242,4 +246,5 @@ extern void *text_poke(void *addr, const void *opcode, size_t len);
 extern int poke_int3_handler(struct pt_regs *regs);
 extern void *text_poke_bp(void *addr, const void *opcode, size_t len, void *handler);
 
+#endif /* !CONFIG_XIP_KERNEL */
 #endif /* _ASM_X86_ALTERNATIVE_H */
