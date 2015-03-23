@@ -227,6 +227,90 @@ xip_data_cp:
 	movl %eax,pa(initial_pg_pmd+0x1000*KPMDS-8)
 #else	/* Not PAE */
 
+#ifdef CONFIG_XIP_KERNEL
+	movl $pa(__brk_base), %edi
+	movl $pa(initial_page_table), %edx
+
+	movl $PTE_IDENT_ATTR, %eax	/* EAX holds identity mapping addr */
+	movl $__PAGE_OFFSET + PTE_IDENT_ATTR, %ebx /* EBX holds kernel addr */
+
+.Lxip_mapping:
+/* Allocate or Load Identity PDE */
+	leal -PTE_IDENT_ATTR(%eax), %ebp
+	andl $0xFFC00000, %ebp
+	shrl $20, %ebp
+	movl (%edx, %ebp), %ecx
+
+	test %ecx, %ecx
+	jnz .Lskip_ident_pde_alloc
+	leal PDE_IDENT_ATTR(%edi), %ecx
+	addl $4096, %edi
+	movl %ecx, (%edx, %ebp)
+
+.Lskip_ident_pde_alloc:
+	leal -PDE_IDENT_ATTR(%ecx), %ecx
+	leal -PTE_IDENT_ATTR(%eax), %ebp
+	andl $0x3FF000, %ebp
+	shrl $10, %ebp
+	movl %eax, (%ecx, %ebp)
+
+/* Allocate or Load PAGE_OFFSET PDE */
+	leal -PTE_IDENT_ATTR(%ebx), %ebp
+	andl $0xFFC00000, %ebp
+	shrl $20, %ebp
+	movl (%edx, %ebp), %ecx
+
+	test %ecx, %ecx
+	jnz .Lskip_offset_pde_alloc
+	leal PDE_IDENT_ATTR(%edi), %ecx
+	addl $4096, %edi
+	movl %ecx, (%edx, %ebp)
+
+.Lskip_offset_pde_alloc:
+	leal -PDE_IDENT_ATTR(%ecx), %ecx
+	leal -PTE_IDENT_ATTR(%ebx), %ebp
+	andl $0x3FF000, %ebp
+	shrl $10, %ebp
+	movl %eax, (%ecx, %ebp)
+
+	addl $4096, %eax
+	addl $4096, %ebx
+
+	cmpl $CONFIG_PHYSICAL_START + PTE_IDENT_ATTR, %eax
+	je   .Lsetup_text_addr
+
+	cmpl $phys_sdata + PTE_IDENT_ATTR, %eax
+	je   .Lsetup_data_addr
+
+	cmpl $pa(_end) + MAPPING_BEYOND_END + PTE_IDENT_ATTR, %eax
+	je   .Ldone
+
+	jmp  .Lxip_mapping
+
+.Lsetup_text_addr:
+	movl $CONFIG_XIP_BASE + 4096 + PTE_IDENT_ATTR, %eax
+	movl $_text, %ebx
+	addl $PTE_IDENT_ATTR, %ebx
+	jmp  .Lxip_mapping
+
+.Lsetup_data_addr:
+	movl $pa(_sdata), %eax
+	addl $PTE_IDENT_ATTR, %eax
+	movl $_sdata, %ebx
+	addl $PTE_IDENT_ATTR, %ebx
+	jmp  .Lxip_mapping
+.Ldone:
+	addl $__PAGE_OFFSET, %edi
+	movl %edi, pa(_brk_end)
+	movl $pa(_end) + MAPPING_BEYOND_END + PTE_IDENT_ATTR, %eax
+	shrl $12, %eax
+	movl %eax, pa(max_pfn_mapped)
+
+	movl $pa(initial_pg_fixmap) + PTE_IDENT_ATTR, %eax
+	movl %eax, pa(initial_page_table + 0xFFC)
+
+#else
+
 page_pde_offset = (__PAGE_OFFSET >> 20);
 
 	movl $pa(__brk_base), %edi
@@ -256,6 +340,7 @@ page_pde_offset = (__PAGE_OFFSET >> 20);
 	/* Do early initialization of the fixmap area */
 	movl $pa(initial_pg_fixmap)+PDE_IDENT_ATTR,%eax
 	movl %eax,pa(initial_page_table+0xffc)
+#endif
 #endif
 
 #ifdef CONFIG_PARAVIRT
