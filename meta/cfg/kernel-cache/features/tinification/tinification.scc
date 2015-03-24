@@ -1,1 +1,4 @@
 merge tinification
+
+include cfg/ntp-enable.scc
+include cfg/multiuser-enable.scc
