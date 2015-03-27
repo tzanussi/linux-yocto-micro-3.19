@@ -1,0 +1,4 @@
+merge xip
+
+include cfg/pae-disable.scc
+include cfg/xip-enable.scc
