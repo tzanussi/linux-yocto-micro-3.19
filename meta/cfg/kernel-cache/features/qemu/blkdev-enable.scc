@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable block devices needed for x86 qemu"
+define KFEATURE_COMPATIBILITY all
+
+kconf non-hardware blkdev-enable.cfg
