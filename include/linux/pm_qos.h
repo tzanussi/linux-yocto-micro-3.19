@@ -115,6 +115,7 @@ static inline int dev_pm_qos_request_active(struct dev_pm_qos_request *req)
 	return req->dev != NULL;
 }
 
+#ifdef CONFIG_PM_QOS
 int pm_qos_update_target(struct pm_qos_constraints *c, struct plist_node *node,
 			 enum pm_qos_req_action action, int value);
 bool pm_qos_update_flags(struct pm_qos_flags *pqf,
@@ -127,6 +128,24 @@ void pm_qos_update_request(struct pm_qos_request *req,
 void pm_qos_update_request_timeout(struct pm_qos_request *req,
 				   s32 new_value, unsigned long timeout_us);
 void pm_qos_remove_request(struct pm_qos_request *req);
+#else
+static inline int pm_qos_update_target(struct pm_qos_constraints *c,
+				       struct plist_node *node,
+				       enum pm_qos_req_action action,
+				       int value) { return 0; }
+static inline bool pm_qos_update_flags(struct pm_qos_flags *pqf,
+				       struct pm_qos_flags_request *req,
+				       enum pm_qos_req_action action,
+				       s32 val) { return 0; }
+static inline void pm_qos_add_request(struct pm_qos_request *req, int pm_qos_class,
+				      s32 value) {}
+static inline void pm_qos_update_request(struct pm_qos_request *req,
+					 s32 new_value) {}
+static inline void pm_qos_update_request_timeout(struct pm_qos_request *req,
+						 s32 new_value,
+						 unsigned long timeout_us) {}
+static inline void pm_qos_remove_request(struct pm_qos_request *req) {}
+#endif
 
 int pm_qos_request(int pm_qos_class);
 int pm_qos_add_notifier(int pm_qos_class, struct notifier_block *notifier);

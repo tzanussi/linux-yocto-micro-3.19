@@ -249,8 +249,10 @@ static int rpm_check_suspend_allowed(struct device *dev)
 	    || (dev->power.request_pending
 			&& dev->power.request == RPM_REQ_RESUME))
 		retval = -EAGAIN;
+#ifdef PM_QOS
 	else if (__dev_pm_qos_read_value(dev) < 0)
 		retval = -EPERM;
+#endif
 	else if (dev->power.runtime_status == RPM_SUSPENDED)
 		retval = 1;
 

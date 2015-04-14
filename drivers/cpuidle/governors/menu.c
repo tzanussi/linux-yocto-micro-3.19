@@ -290,11 +290,16 @@ again:
 static int menu_select(struct cpuidle_driver *drv, struct cpuidle_device *dev)
 {
 	struct menu_device *data = this_cpu_ptr(&menu_devices);
-	int latency_req = pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
+	int latency_req;
 	int i;
 	unsigned int interactivity_req;
 	unsigned long nr_iowaiters, cpu_load;
 
+#ifdef CONFIG_PM_QOS
+	latency_req = pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
+#else
+	latency_req = PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE;
+#endif
 	if (data->needs_update) {
 		menu_update(drv, dev);
 		data->needs_update = 0;

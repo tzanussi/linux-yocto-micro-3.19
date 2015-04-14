@@ -534,7 +534,7 @@ int cpuidle_register(struct cpuidle_driver *drv,
 }
 EXPORT_SYMBOL_GPL(cpuidle_register);
 
-#ifdef CONFIG_SMP
+#if defined(CONFIG_SMP) && defined(CONFIG_PM_QOS)
 
 /*
  * This function gets called when a part of the kernel has a new latency

@@ -69,8 +69,11 @@ static int ladder_select_state(struct cpuidle_driver *drv,
 	struct ladder_device *ldev = this_cpu_ptr(&ladder_devices);
 	struct ladder_device_state *last_state;
 	int last_residency, last_idx = ldev->last_state_idx;
+#ifdef CONFIG_PM_QOS
 	int latency_req = pm_qos_request(PM_QOS_CPU_DMA_LATENCY);
-
+#else
+	int latency_req = PM_QOS_CPU_DMA_LAT_DEFAULT_VALUE;
+#endif
 	/* Special case when user has set very strict latency requirement */
 	if (unlikely(latency_req == 0)) {
 		ladder_do_selection(ldev, last_idx, 0);

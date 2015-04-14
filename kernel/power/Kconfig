@@ -290,6 +290,15 @@ config WQ_POWER_EFFICIENT_DEFAULT
 
 	  If in doubt, say N.
 
+config PM_QOS
+	bool "Power Management Quality of Service userspace interface"
+	depends on PM && ACPI && SYSFS
+	default y
+	---help---
+	This option enables the PM QOS userspace interface.  See
+	Documentation/power/pm_qos_interface.txt for details on the
+	QOS interface.
+
 config PM_GENERIC_DOMAINS_SLEEP
 	def_bool y
 	depends on PM_SLEEP && PM_GENERIC_DOMAINS
