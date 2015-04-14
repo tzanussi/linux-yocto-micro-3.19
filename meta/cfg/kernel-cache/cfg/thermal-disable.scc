@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Disable thermal userspace support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware thermal-disable.cfg
