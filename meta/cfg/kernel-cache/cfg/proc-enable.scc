@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable proc support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware proc-enable.cfg
