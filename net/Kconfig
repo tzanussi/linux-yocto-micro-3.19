@@ -86,6 +86,7 @@ endif # if INET
 # XXX seccomp and other users should auto enable?
 config LPF_FILTER
 	bool "LPF filter"
+	select BPF
 	default y
 	help
 	  Enable BPF/LPF (Linux Packet Filter) filtering on sockets.
