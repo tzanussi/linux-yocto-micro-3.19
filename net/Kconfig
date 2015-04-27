@@ -6,7 +6,6 @@ menuconfig NET
 	bool "Networking support"
 	select NLATTR
 	select GENERIC_NET_UTILS
-	select BPF
 	select RHASHTABLE
 	---help---
 	  Unless you really know what you are doing, you should say Y here.
