@@ -1,0 +1,4 @@
+define KFEATURE_DESCRIPTION "Enable INET support"
+define KFEATURE_COMPATIBILITY arch
+
+kconf non-hardware inet-enable.cfg
