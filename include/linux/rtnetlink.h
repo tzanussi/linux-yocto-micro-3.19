@@ -18,6 +18,10 @@ void rtnl_notify(struct sk_buff *skb, struct net *net, u32 pid,
 			u32 group, struct nlmsghdr *nlh, gfp_t flags);
 void rtmsg_ifinfo(int type, struct net_device *dev, unsigned change, gfp_t flags);
 int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid);
+struct sk_buff *rtmsg_ifinfo_build_skb(int type, struct net_device *dev,
+				       unsigned change, gfp_t flags);
+void rtmsg_ifinfo_send(struct sk_buff *skb, struct net_device *dev,
+		       gfp_t flags);
 #else
 static inline int rtnl_unicast(struct sk_buff *skb, struct net *net, u32 pid)
 { return -EIO; }
@@ -33,12 +37,12 @@ static inline int
 rtnetlink_put_metrics(struct sk_buff *skb, u32 *metrics) { return -EINVAL; }
 
 static inline void rtnl_set_sk_err(struct net *net, u32 group, int error) {}
+static inline struct sk_buff *rtmsg_ifinfo_build_skb(int type, struct net_device *dev,
+						     unsigned change, gfp_t flags)
+{ return NULL; }
+static inline void rtmsg_ifinfo_send(struct sk_buff *skb, struct net_device *dev,
+				     gfp_t flags) { }
 #endif
-
-struct sk_buff *rtmsg_ifinfo_build_skb(int type, struct net_device *dev,
-				       unsigned change, gfp_t flags);
-void rtmsg_ifinfo_send(struct sk_buff *skb, struct net_device *dev,
-		       gfp_t flags);
 
 
 /* RTNL is used as a global lock for all changes to network configuration  */
