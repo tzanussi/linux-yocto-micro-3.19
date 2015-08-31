@@ -7,6 +7,9 @@
   Copyright (C) 2001 SGI - Silicon Graphics, Inc <linux-xfs@oss.sgi.com>
   Copyright (c) 2004 Red Hat, Inc., James Morris <jmorris@redhat.com>
  */
+
+#ifndef CONFIG_XATTR_NO_SUPPORT
+
 #include <linux/fs.h>
 #include <linux/slab.h>
 #include <linux/file.h>
@@ -971,3 +974,6 @@ void simple_xattr_list_add(struct simple_xattrs *xattrs,
 	list_add(&new_xattr->list, &xattrs->head);
 	spin_unlock(&xattrs->lock);
 }
+
+#endif	/* !CONFIG_XATTR_NO_SUPPORT */
+

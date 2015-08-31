@@ -11,6 +11,7 @@ syscall64 := $(srctree)/$(src)/syscall_64.tbl
 syshdr := $(srctree)/$(src)/syscallhdr.sh
 systbl := $(srctree)/$(src)/syscalltbl.sh
 
+ifndef CONFIG_XATTR_NO_SUPPORT
 quiet_cmd_syshdr = SYSHDR  $@
       cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@' \
 		   '$(syshdr_abi_$(basetarget))' \
@@ -18,6 +19,15 @@ quiet_cmd_syshdr = SYSHDR  $@
 		   '$(syshdr_offset_$(basetarget))'
 quiet_cmd_systbl = SYSTBL  $@
       cmd_systbl = $(CONFIG_SHELL) '$(systbl)' $< $@
+else
+quiet_cmd_syshdr = SYSHDR  $@
+      cmd_syshdr = $(CONFIG_SHELL) '$(syshdr)' '$<' '$@' \
+		   '$(syshdr_abi_$(basetarget))' \
+		   '$(syshdr_pfx_$(basetarget))' \
+		   '$(syshdr_offset_$(basetarget))' 'no_xattr_syscall'
+quiet_cmd_systbl = SYSTBL  $@
+      cmd_systbl = $(CONFIG_SHELL) '$(systbl)' $< $@ 'no_xattr_syscall'
+endif
 
 syshdr_abi_unistd_32 := i386
 $(uapi)/unistd_32.h: $(syscall32) $(syshdr)

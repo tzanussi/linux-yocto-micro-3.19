@@ -272,4 +272,32 @@ endif # NETWORK_FILESYSTEMS
 source "fs/nls/Kconfig"
 source "fs/dlm/Kconfig"
 
+#
+# Simple VFS Configuration
+#
+# It's used to decrease the size of kernel.
+#
+menu "Simple VFS configs"
+
+config XATTR_NO_SUPPORT
+	bool "Disable XATTR (Extended Attributes) support"
+	default n
+	depends on KERNFS =n && EXT2_FS_XATTR=n && EXT3_FS_XATTR=n && TMPFS_XATTR=n && \
+AUFS_XATTR=n && CIFS_XATTR=n && F2FS_FS_XATTR=n && JFFS2_FS_XATTR=n && \
+REISERFS_FS_XATTR=n && SQUASHFS_XATTR=n && YAFFS_XATTR=n
+
+	help
+	  This option disables the support for XATTR (Extended Attributes).
+
+	  Say Y here to decrease the size of kernel,
+	  and then some syscall definitions will not be compiled.
+
+	  Users considering disabling this option should consider the specific
+	  filesystems. Some filesystems (e.g. EXT2/EXT3/TMPFS) need the support
+	  for XATTR.
+
+	  If unsure, say N here.
+
+endmenu
+
 endmenu
