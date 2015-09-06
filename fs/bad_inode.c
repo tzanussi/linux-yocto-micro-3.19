@@ -8,6 +8,8 @@
  *  Fabian Frederick : August 2003 - All file operations assigned to EIO
  */
 
+#ifndef CONFIG_BAD_INODE_NO_SUPPORT
+
 #include <linux/fs.h>
 #include <linux/export.h>
 #include <linux/stat.h>
@@ -359,3 +361,6 @@ void iget_failed(struct inode *inode)
 	iput(inode);
 }
 EXPORT_SYMBOL(iget_failed);
+
+#endif /* !CONFIG_BAD_INODE_NO_SUPPORT */
+
