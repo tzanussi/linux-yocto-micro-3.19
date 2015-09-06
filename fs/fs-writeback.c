@@ -319,7 +319,18 @@ static int write_inode(struct inode *inode, struct writeback_control *wbc)
 {
 	int ret;
 
+/*
+ * In single process embedded system there is no specific filesystem like ext2/jffs2,
+ * so users can disable the support for bad_inode.
+ * In the case the function 'make_bad_inode' is never called to make an inode bad,
+ * so there is no bad inode, and then it don't need to decide if the inode is
+ * a bad inode.
+ */
+#ifndef CONFIG_BAD_INODE_NO_SUPPORT
 	if (inode->i_sb->s_op->write_inode && !is_bad_inode(inode)) {
+#else
+	if (inode->i_sb->s_op->write_inode) {
+#endif
 		trace_writeback_write_inode_start(inode, wbc);
 		ret = inode->i_sb->s_op->write_inode(inode, wbc);
 		trace_writeback_write_inode(inode, wbc);

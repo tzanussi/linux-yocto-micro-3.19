@@ -282,7 +282,7 @@ menu "Simple VFS configs"
 config XATTR_NO_SUPPORT
 	bool "Disable XATTR (Extended Attributes) support"
 	default n
-	depends on KERNFS =n && EXT2_FS_XATTR=n && EXT3_FS_XATTR=n && TMPFS_XATTR=n && \
+	depends on KERNFS=n && EXT2_FS_XATTR=n && EXT3_FS_XATTR=n && TMPFS_XATTR=n && \
 AUFS_XATTR=n && CIFS_XATTR=n && F2FS_FS_XATTR=n && JFFS2_FS_XATTR=n && \
 REISERFS_FS_XATTR=n && SQUASHFS_XATTR=n && YAFFS_XATTR=n
 
@@ -295,6 +295,27 @@ REISERFS_FS_XATTR=n && SQUASHFS_XATTR=n && YAFFS_XATTR=n
 	  Users considering disabling this option should consider the specific
 	  filesystems. Some filesystems (e.g. EXT2/EXT3/TMPFS) need the support
 	  for XATTR.
+
+	  If unsure, say N here.
+
+config BAD_INODE_NO_SUPPORT
+	bool "Disable bad_inode support"
+	default n
+	depends on FUSE_FS=n && UBIFS_FS=n && JFFS2_FS=n && EXT2_FS=n && UDF_FS=n && \
+UFS_FS=n && BTRFS_FS=n && ECRYPT_FS=n && EXT4_FS=n && HFS_FS=n && NILFS2_FS=n && \
+OCFS2_FS=n && OMFS_FS=n && REISERFS_FS=n && F2FS_FS=n
+
+	help
+	  This option disable the support for bad_inode.
+
+	  Sometimes the embedded system is just running in the single process,
+	  do one thing or simple thing. It will not need the specific filesystem
+	  (e.g. EXT2/JFFS2). And then it will not need the bad_inode support.
+
+	  So users can say Y here to decrease the size of kernel.
+
+	  While users considering disabling this option should consider the specific
+	  filesystems. Some filesystems (e.g. EXT2/JFFS2) need the support for bad_inode.
 
 	  If unsure, say N here.
 
